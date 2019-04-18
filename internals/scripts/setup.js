@@ -29,7 +29,7 @@ cleanRepo(() => {
 });
 
 /**
- * Deletes the .git folder in dir only if cloned from our repo
+ * Propose to delete the .git folder, if cloned from the original repo
  */
 function cleanRepo(callback) {
   fs.readFile('.git/config', 'utf8', (err, data) => {
@@ -37,7 +37,7 @@ function cleanRepo(callback) {
       const isClonedRepo =
         typeof data === 'string' &&
         (data.match(/url\s*=/g) || []).length === 1 &&
-        /react-boilerplate\/react-boilerplate\.git/.test(data);
+        /\/react-material-typescript\.git/.test(data);
       if (isClonedRepo) {
         process.stdout.write('\nDo you want to clear old repository? [Y/n] ');
         process.stdin.resume();
