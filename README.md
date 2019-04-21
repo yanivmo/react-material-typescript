@@ -19,3 +19,13 @@ This project is a mere fork, with some changes, of its increadible predecessors:
 Now you're ready to rumble!
 
 > Please note that this boilerplate is **production-ready and not meant for beginners**! If you're just starting out with react or redux, please refer to https://github.com/petehunt/react-howto instead. If you want a solid, battle-tested base to build your next product upon and have some experience with react, this is the perfect start for you.
+
+## Documentation
+
+- [Material UI]()
+
+## What changed
+
+This project is based on [react-boilerplate-typescript](https://github.com/Can-Sahin/react-boilerplate-typescript). These are the changed that were made to the orginal code:
+
+- Installed Material-UI packages.
