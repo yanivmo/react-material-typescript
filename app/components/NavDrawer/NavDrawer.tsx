@@ -15,7 +15,7 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import { withTheme, Theme } from '@material-ui/core/styles';
+import { createStyles, withStyles } from '@material-ui/core/styles';
 import { SvgIconProps } from '@material-ui/core/SvgIcon';
 
 import HomeIcon from '@material-ui/icons/Home';
@@ -24,6 +24,19 @@ import ExampleIcon from '@material-ui/icons/LocalPlay';
 import SettingsIcon from '@material-ui/icons/Settings';
 
 import messages from './messages';
+import StyleClasses from 'styles/styleClasses';
+
+const stylesPrototype = {
+  drawer: {
+    width: 0,
+    flexShrink: 0,
+  },
+  drawerPaper: {
+    width: 0,
+  },
+};
+
+type NavDrawerClasses = StyleClasses<typeof stylesPrototype>;
 
 interface DrawerButtonProps {
   caption: string;
@@ -33,7 +46,13 @@ interface DrawerButtonProps {
 
 interface NavDrawerProps {
   intl: InjectedIntl;
-  theme: Theme;
+}
+
+/**
+ * Return the length of the longest string in an array.
+ */
+function longest(strings: string[]): number {
+  return strings.reduce((max, s) => Math.max(s.length, max), 0);
 }
 
 /**
@@ -67,17 +86,19 @@ const DrawerButton: React.SFC<DrawerButtonProps> = ({
 /**
  * App-wide navigation drawer component.
  */
-const NavDrawer: React.SFC<NavDrawerProps> = ({ intl, theme }) => {
-  const style = useMemo(
-    () => ({
-      width: theme.navDrawer.width,
-      flexShrink: 0,
-    }),
-    [theme],
-  );
-
+const NavDrawer: React.SFC<NavDrawerProps & NavDrawerClasses> = ({
+  intl,
+  classes,
+}) => {
   return (
-    <Drawer variant="permanent" style={style} open>
+    <Drawer
+      open
+      variant="permanent"
+      className={classes.drawer}
+      classes={{
+        paper: classes.drawerPaper,
+      }}
+    >
       <List>
         <DrawerButton
           caption={intl.formatMessage(messages.homeButtonCaption)}
@@ -107,4 +128,31 @@ const NavDrawer: React.SFC<NavDrawerProps> = ({ intl, theme }) => {
   );
 };
 
-export default withTheme()(injectIntl(NavDrawer));
+const StyledNavDrawer: React.SFC<NavDrawerProps> = ({ intl }) => {
+  const styles = useMemo(
+    () => {
+      const maxTextWidth = longest(
+        Object.values(messages).map(m => intl.formatMessage(m)),
+      );
+
+      // The calculated width is an approximation based on the number
+      // of letters and the maximum possible letter width. In practice
+      // it is usually somewhat smaller. We could invewstigate the DOM
+      // for the real values but it feels like an overkill at this stage
+      const widthEmpiricalAdjustment = 0.9;
+
+      const newStyles = Object.create(stylesPrototype);
+      newStyles.drawer.width = `${maxTextWidth * widthEmpiricalAdjustment}em`;
+      newStyles.drawerPaper.width = newStyles.drawer.width;
+
+      return newStyles;
+    },
+    [intl],
+  );
+
+  const StyledMe = withStyles(createStyles(styles))(NavDrawer);
+
+  return <StyledMe intl={intl} />;
+};
+
+export default injectIntl(StyledNavDrawer);
