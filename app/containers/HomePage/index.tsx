@@ -69,7 +69,7 @@ export class HomePage extends React.PureComponent<Props> {
     };
 
     return (
-      <article>
+      <article style={{ height: '100%' }}>
         <Helmet>
           <title>Home Page</title>
           <meta

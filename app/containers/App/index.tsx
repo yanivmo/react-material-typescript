@@ -24,16 +24,16 @@ import NotFoundPage from 'containers/NotFoundPage/Loadable';
 const theme = createTheme({});
 
 const AppContent = styled.div`
-  display: 'flex',
-  height: '100%',
-  width: '100%',
+  display: flex;
+  height: 100%;
+  width: 100%;
 `;
 
 const Main = withTheme()(styled.main`
-  flexGrow: 1,
-  height: '100%',
-  backgroundColor: ${props => props.theme.palette.background.default},
-  padding: ${props => props.theme.spacing.unit * 3},
+  flex-grow: 1;
+  height: 100%;
+  background-color: ${props => props.theme.palette.background.default};
+  padding: ${props => props.theme.spacing.unit * 3};
 `);
 
 /**
