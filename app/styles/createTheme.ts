@@ -32,6 +32,9 @@ export default function createTheme(options: ThemeOptions) {
       width: 240,
       breakpoint: 'lg',
     },
+    typography: {
+      useNextVariants: true,
+    },
     ...options,
   });
 }
