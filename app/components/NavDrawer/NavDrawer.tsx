@@ -6,6 +6,7 @@
  */
 
 import React, { useCallback, useMemo } from 'react';
+import { injectIntl, InjectedIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 
 import Divider from '@material-ui/core/Divider';
@@ -22,6 +23,8 @@ import HelpIcon from '@material-ui/icons/Help';
 import ExampleIcon from '@material-ui/icons/LocalPlay';
 import SettingsIcon from '@material-ui/icons/Settings';
 
+import messages from './messages';
+
 interface DrawerButtonProps {
   caption: string;
   linkTo: string;
@@ -29,6 +32,7 @@ interface DrawerButtonProps {
 }
 
 interface NavDrawerProps {
+  intl: InjectedIntl;
   theme: Theme;
 }
 
@@ -63,7 +67,7 @@ const DrawerButton: React.SFC<DrawerButtonProps> = ({
 /**
  * App-wide navigation drawer component.
  */
-const NavDrawer: React.SFC<NavDrawerProps> = ({ theme }) => {
+const NavDrawer: React.SFC<NavDrawerProps> = ({ intl, theme }) => {
   const style = useMemo(
     () => ({
       width: theme.navDrawer.width,
@@ -75,9 +79,13 @@ const NavDrawer: React.SFC<NavDrawerProps> = ({ theme }) => {
   return (
     <Drawer variant="permanent" style={style} open>
       <List>
-        <DrawerButton caption="Home" icon={HomeIcon} linkTo="/" />
         <DrawerButton
-          caption="State machine example"
+          caption={intl.formatMessage(messages.homeButtonCaption)}
+          icon={HomeIcon}
+          linkTo="/"
+        />
+        <DrawerButton
+          caption={intl.formatMessage(messages.smExampleButtonCaption)}
           icon={ExampleIcon}
           linkTo="/sm_example"
         />
@@ -85,14 +93,18 @@ const NavDrawer: React.SFC<NavDrawerProps> = ({ theme }) => {
       <Divider />
       <List>
         <DrawerButton
-          caption="Settings"
+          caption={intl.formatMessage(messages.settingsButtonCaption)}
           icon={SettingsIcon}
           linkTo="/settings"
         />
-        <DrawerButton caption="Help" icon={HelpIcon} linkTo="/help" />
+        <DrawerButton
+          caption={intl.formatMessage(messages.helpButtonCaption)}
+          icon={HelpIcon}
+          linkTo="/help"
+        />
       </List>
     </Drawer>
   );
 };
 
-export default withTheme()(NavDrawer);
+export default withTheme()(injectIntl(NavDrawer));

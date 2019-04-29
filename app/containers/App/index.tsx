@@ -33,7 +33,7 @@ const Main = withTheme()(styled.main`
   flex-grow: 1;
   height: 100%;
   background-color: ${props => props.theme.palette.background.default};
-  padding: ${props => props.theme.spacing.unit * 3};
+  padding: ${props => props.theme.spacing.unit * 3}px;
 `);
 
 /**
