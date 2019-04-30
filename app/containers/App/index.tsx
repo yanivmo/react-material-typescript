@@ -8,38 +8,43 @@
 
 import * as React from 'react';
 import { Helmet } from 'react-helmet';
-import { Switch, Route } from 'react-router-dom';
 import styled from 'styled-components';
 
+import AppBar from '@material-ui/core/AppBar';
 import CssBaseline from '@material-ui/core/CssBaseline';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+
 import { MuiThemeProvider, withTheme } from '@material-ui/core/styles';
 
 import createTheme from 'styles/createTheme';
-
 import NavDrawer from 'components/NavDrawer';
-import HomePage from 'containers/HomePage/Loadable';
-import FeaturePage from 'containers/FeaturePage/Loadable';
-import NotFoundPage from 'containers/NotFoundPage/Loadable';
+import { ActiveRoute } from 'containers/Routes';
 
 const theme = createTheme({});
 
-const AppContent = styled.div`
+const Root = styled.div`
   display: flex;
   height: 100%;
   width: 100%;
 `;
 
-const Main = withTheme()(styled.main`
+const ContentContainer = withTheme()(styled.div`
   flex-grow: 1;
   height: 100%;
   background-color: ${props => props.theme.palette.background.default};
+`);
+
+const Main = withTheme()(styled.main`
+  height: 100%;
+  width: 100%;
   padding: ${props => props.theme.spacing.unit * 3}px;
 `);
 
 /**
  * Takes care of the title, description and fonts of all the pages.
  */
-const Head: React.SFC = () => {
+const Head: React.FC = () => {
   return (
     // %s is replaced by the title of the current page
     <Helmet
@@ -65,21 +70,26 @@ const Head: React.SFC = () => {
   );
 };
 
-const App: React.SFC = () => {
+const App: React.FC = () => {
   return (
     <MuiThemeProvider theme={theme}>
       <CssBaseline />
       <Head />
-      <AppContent>
+      <Root>
         <NavDrawer />
-        <Main>
-          <Switch>
-            <Route exact path="/" component={HomePage} />
-            <Route path="/sm_example" component={FeaturePage} />
-            <Route path="" component={NotFoundPage} />
-          </Switch>
-        </Main>
-      </AppContent>
+        <ContentContainer>
+          <AppBar position="static">
+            <Toolbar>
+              <Typography variant="h6" color="inherit" noWrap>
+                <ActiveRoute render="title" />
+              </Typography>
+            </Toolbar>
+          </AppBar>
+          <Main>
+            <ActiveRoute render="content" />
+          </Main>
+        </ContentContainer>
+      </Root>
     </MuiThemeProvider>
   );
 };
