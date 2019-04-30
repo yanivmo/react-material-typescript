@@ -11,6 +11,7 @@ import { Link } from 'react-router-dom';
 
 import Divider from '@material-ui/core/Divider';
 import Drawer from '@material-ui/core/Drawer';
+import Grid from '@material-ui/core/Grid';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -23,8 +24,13 @@ import HelpIcon from '@material-ui/icons/Help';
 import ExampleIcon from '@material-ui/icons/LocalPlay';
 import SettingsIcon from '@material-ui/icons/Settings';
 
+import MaterialIcon from 'components/icons/Material-UI';
+import ReactIcon from 'components/icons/React';
+import TypeScriptIcon from 'components/icons/TypeScript';
+
 import messages from './messages';
 import StyleClasses from 'styles/styleClasses';
+import { Typography } from '@material-ui/core';
 
 const stylesPrototype = {
   drawer: {
@@ -59,7 +65,7 @@ function longest(strings: string[]): number {
  * A component representing one navigation item in the navigation
  * drawer.
  */
-const DrawerButton: React.SFC<DrawerButtonProps> = ({
+const DrawerButton: React.FC<DrawerButtonProps> = ({
   caption,
   linkTo,
   icon,
@@ -83,10 +89,28 @@ const DrawerButton: React.SFC<DrawerButtonProps> = ({
   );
 };
 
+const DrawerHeader: React.FC = () => {
+  const iconSize = {
+    width: '3.5em',
+    height: '3.5em',
+  };
+  return (
+    <Grid container justify="center" alignItems="center">
+      <Typography variant="title">
+        <ReactIcon style={iconSize} />
+        <TypeScriptIcon
+          style={{ marginLeft: '0.5em', marginRight: '0.5em', ...iconSize }}
+        />
+        <MaterialIcon style={iconSize} />
+      </Typography>
+    </Grid>
+  );
+};
+
 /**
  * App-wide navigation drawer component.
  */
-const NavDrawer: React.SFC<NavDrawerProps & NavDrawerClasses> = ({
+const NavDrawer: React.FC<NavDrawerProps & NavDrawerClasses> = ({
   intl,
   classes,
 }) => {
@@ -99,6 +123,8 @@ const NavDrawer: React.SFC<NavDrawerProps & NavDrawerClasses> = ({
         paper: classes.drawerPaper,
       }}
     >
+      <DrawerHeader />
+      <Divider />
       <List>
         <DrawerButton
           caption={intl.formatMessage(messages.homeButtonCaption)}
@@ -128,7 +154,7 @@ const NavDrawer: React.SFC<NavDrawerProps & NavDrawerClasses> = ({
   );
 };
 
-const StyledNavDrawer: React.SFC<NavDrawerProps> = ({ intl }) => {
+const StyledNavDrawer: React.FC<NavDrawerProps> = ({ intl }) => {
   const styles = useMemo(
     () => {
       const maxTextWidth = longest(
