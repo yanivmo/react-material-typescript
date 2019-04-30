@@ -25,18 +25,21 @@ const theme = createTheme({});
 
 const Root = styled.div`
   display: flex;
+  position: fixed;
   height: 100%;
   width: 100%;
 `;
 
 const ContentContainer = withTheme()(styled.div`
   flex-grow: 1;
+  display: flex;
+  flex-direction: column;
   height: 100%;
   background-color: ${props => props.theme.palette.background.default};
 `);
 
 const Main = withTheme()(styled.main`
-  height: 100%;
+  flex-grow: 1;
   width: 100%;
   padding: ${props => props.theme.spacing.unit * 3}px;
 `);
