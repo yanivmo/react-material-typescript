@@ -18,7 +18,7 @@ import Typography from '@material-ui/core/Typography';
 import { MuiThemeProvider, withTheme } from '@material-ui/core/styles';
 
 import createTheme from 'styles/createTheme';
-import NavDrawer from 'components/NavDrawer';
+import NavDrawer from 'containers/NavDrawer';
 import { ActiveRoute } from 'containers/Routes';
 
 const theme = createTheme({});

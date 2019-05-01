@@ -8,23 +8,23 @@ import { defineMessages } from 'react-intl';
 export const scope = 'Routes';
 
 export default defineMessages({
-  pageHomeTitle: {
+  routeHomeTitle: {
     id: `${scope}.home.title`,
     defaultMessage: 'Home',
   },
-  pageSmExampleTitle: {
+  routeSmExampleTitle: {
     id: `${scope}.sm_example.title`,
     defaultMessage: 'State machine example',
   },
-  pageSettingsTitle: {
+  routeSettingsTitle: {
     id: `${scope}.settings.title`,
     defaultMessage: 'Settings',
   },
-  pageHelpTitle: {
+  routeHelpTitle: {
     id: `${scope}.help.title`,
     defaultMessage: 'Help',
   },
-  page404Title: {
+  route404Title: {
     id: `${scope}.404.title`,
     defaultMessage: '404',
   },

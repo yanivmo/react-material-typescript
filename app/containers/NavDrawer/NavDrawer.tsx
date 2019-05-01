@@ -2,10 +2,10 @@
  *
  * NavDrawer
  *
- * App-wide navigation drawer component.
+ * App-wide navigation drawer.
  */
 
-import React, { useCallback, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { injectIntl, InjectedIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 
@@ -17,20 +17,15 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import { createStyles, withStyles } from '@material-ui/core/styles';
-import { SvgIconProps } from '@material-ui/core/SvgIcon';
-
-import HomeIcon from '@material-ui/icons/Home';
-import HelpIcon from '@material-ui/icons/Help';
-import ExampleIcon from '@material-ui/icons/LocalPlay';
-import SettingsIcon from '@material-ui/icons/Settings';
 
 import MaterialIcon from 'components/icons/Material-UI';
 import ReactIcon from 'components/icons/React';
 import TypeScriptIcon from 'components/icons/TypeScript';
 
-import messages from './messages';
 import StyleClasses from 'styles/styleClasses';
 import { Typography } from '@material-ui/core';
+
+import routes, { RouteDescription } from 'containers/Routes';
 
 const stylesPrototype = {
   drawer: {
@@ -41,18 +36,7 @@ const stylesPrototype = {
     width: 0,
   },
 };
-
 type NavDrawerClasses = StyleClasses<typeof stylesPrototype>;
-
-interface DrawerButtonProps {
-  caption: string;
-  linkTo: string;
-  icon: React.ComponentType<SvgIconProps>;
-}
-
-interface NavDrawerProps {
-  intl: InjectedIntl;
-}
 
 /**
  * Return the length of the longest string in an array.
@@ -61,41 +45,43 @@ function longest(strings: string[]): number {
   return strings.reduce((max, s) => Math.max(s.length, max), 0);
 }
 
+interface RouteButtonProps {
+  route: RouteDescription;
+  intl: InjectedIntl;
+}
+
 /**
  * A component representing one navigation item in the navigation
  * drawer.
  */
-const DrawerButton: React.FC<DrawerButtonProps> = ({
-  caption,
-  linkTo,
-  icon,
-}) => {
-  // Make it recognizable as a React component
-  const Icon = icon;
-
-  // A component linking to the specific page. Remount it only when
-  // linkTo property changes
-  const LinkTo = useCallback(props => <Link to={linkTo} {...props} />, [
-    linkTo,
-  ]);
+const RouteButton: React.FC<RouteButtonProps> = ({ route, intl }) => {
+  const Icon = route.icon;
+  const LinkTo = props => <Link to={route.path} {...props} />;
 
   return (
     <ListItem button component={LinkTo}>
       <ListItemIcon>
         <Icon />
       </ListItemIcon>
-      <ListItemText primary={caption} />
+      <ListItemText primary={intl.formatMessage(route.titleMsg)} />
     </ListItem>
   );
 };
 
+/**
+ * The header of the navigation drawer.
+ * Usually contains a caption or an icon.
+ */
 const DrawerHeader: React.FC = () => {
-  const iconSize: React.CSSProperties = {
-    width: '3.5em',
-    height: '3.5em',
-    marginTop: '0.5em',
-    marginBottom: '0.5em',
-  };
+  const iconSize = useMemo(
+    () => ({
+      width: '3.5em',
+      height: '3.5em',
+      marginTop: '0.5em',
+      marginBottom: '0.5em',
+    }),
+    [],
+  );
   return (
     <Grid container justify="center" alignItems="center">
       <Typography variant="title">
@@ -109,6 +95,10 @@ const DrawerHeader: React.FC = () => {
   );
 };
 
+interface NavDrawerProps {
+  intl: InjectedIntl;
+}
+
 /**
  * App-wide navigation drawer component.
  */
@@ -116,6 +106,8 @@ const NavDrawer: React.FC<NavDrawerProps & NavDrawerClasses> = ({
   intl,
   classes,
 }) => {
+  const routeButton = route => <RouteButton route={route} intl={intl} />;
+
   return (
     <Drawer
       open
@@ -128,29 +120,13 @@ const NavDrawer: React.FC<NavDrawerProps & NavDrawerClasses> = ({
       <DrawerHeader />
       <Divider />
       <List component="nav">
-        <DrawerButton
-          caption={intl.formatMessage(messages.homeButtonCaption)}
-          icon={HomeIcon}
-          linkTo="/"
-        />
-        <DrawerButton
-          caption={intl.formatMessage(messages.smExampleButtonCaption)}
-          icon={ExampleIcon}
-          linkTo="/sm_example"
-        />
+        {routeButton(routes.home)}
+        {routeButton(routes.smExample)}
       </List>
       <Divider />
       <List component="nav">
-        <DrawerButton
-          caption={intl.formatMessage(messages.settingsButtonCaption)}
-          icon={SettingsIcon}
-          linkTo="/settings"
-        />
-        <DrawerButton
-          caption={intl.formatMessage(messages.helpButtonCaption)}
-          icon={HelpIcon}
-          linkTo="/help"
-        />
+        {routeButton(routes.settings)}
+        {routeButton(routes.help)}
       </List>
     </Drawer>
   );
@@ -160,7 +136,7 @@ const StyledNavDrawer: React.FC<NavDrawerProps> = ({ intl }) => {
   const styles = useMemo(
     () => {
       const maxTextWidth = longest(
-        Object.values(messages).map(m => intl.formatMessage(m)),
+        Object.values(routes).map(r => intl.formatMessage(r.titleMsg)),
       );
 
       // The calculated width is an approximation based on the number

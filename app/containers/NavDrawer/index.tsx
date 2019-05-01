@@ -1,2 +1,1 @@
-import NavDrawer from './NavDrawer';
-export default NavDrawer;
+export { default } from './NavDrawer';
