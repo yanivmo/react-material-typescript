@@ -90,9 +90,11 @@ const DrawerButton: React.FC<DrawerButtonProps> = ({
 };
 
 const DrawerHeader: React.FC = () => {
-  const iconSize = {
+  const iconSize: React.CSSProperties = {
     width: '3.5em',
     height: '3.5em',
+    marginTop: '0.5em',
+    marginBottom: '0.5em',
   };
   return (
     <Grid container justify="center" alignItems="center">
@@ -125,7 +127,7 @@ const NavDrawer: React.FC<NavDrawerProps & NavDrawerClasses> = ({
     >
       <DrawerHeader />
       <Divider />
-      <List>
+      <List component="nav">
         <DrawerButton
           caption={intl.formatMessage(messages.homeButtonCaption)}
           icon={HomeIcon}
@@ -138,7 +140,7 @@ const NavDrawer: React.FC<NavDrawerProps & NavDrawerClasses> = ({
         />
       </List>
       <Divider />
-      <List>
+      <List component="nav">
         <DrawerButton
           caption={intl.formatMessage(messages.settingsButtonCaption)}
           icon={SettingsIcon}
