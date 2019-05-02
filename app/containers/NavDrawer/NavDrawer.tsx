@@ -135,9 +135,8 @@ const NavDrawer: React.FC<NavDrawerProps & NavDrawerClasses> = ({
 const StyledNavDrawer: React.FC<NavDrawerProps> = ({ intl }) => {
   const styles = useMemo(
     () => {
-      const maxTextWidth = longest(
-        Object.values(routes).map(r => intl.formatMessage(r.titleMsg)),
-      );
+      // The drawer won't contract to less than this value (in em)
+      const minWidth = 18;
 
       // The calculated width is an approximation based on the number
       // of letters and the maximum possible letter width. In practice
@@ -145,8 +144,17 @@ const StyledNavDrawer: React.FC<NavDrawerProps> = ({ intl }) => {
       // for the real values but it feels like an overkill at this stage
       const widthEmpiricalAdjustment = 0.9;
 
+      const maxTextWidth = longest(
+        Object.values(routes).map(r => intl.formatMessage(r.titleMsg)),
+      );
+
+      let width = minWidth;
+      if (minWidth > maxTextWidth) {
+        width = maxTextWidth * widthEmpiricalAdjustment;
+      }
+
       const newStyles = Object.create(stylesPrototype);
-      newStyles.drawer.width = `${maxTextWidth * widthEmpiricalAdjustment}em`;
+      newStyles.drawer.width = `${width}em`;
       newStyles.drawerPaper.width = newStyles.drawer.width;
 
       return newStyles;
