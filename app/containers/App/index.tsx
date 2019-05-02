@@ -8,44 +8,92 @@
 
 import * as React from 'react';
 import { Helmet } from 'react-helmet';
-import styled from 'styles/styled-components';
-import { Switch, Route } from 'react-router-dom';
+import styled from 'styled-components';
 
-import HomePage from 'containers/HomePage/Loadable';
-import FeaturePage from 'containers/FeaturePage/Loadable';
-import NotFoundPage from 'containers/NotFoundPage/Loadable';
-import Header from 'components/Header';
-import Footer from 'components/Footer';
+import AppBar from '@material-ui/core/AppBar';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
 
-import GlobalStyle from '../../global-styles';
+import { MuiThemeProvider, withTheme } from '@material-ui/core/styles';
 
-const AppWrapper = styled.div`
-  max-width: calc(768px + 16px * 2);
-  margin: 0 auto;
+import createTheme from 'styles/createTheme';
+import NavDrawer from 'containers/NavDrawer';
+import { ActiveRoute } from 'containers/Routes';
+
+const theme = createTheme({});
+
+const Root = styled.div`
   display: flex;
-  min-height: 100%;
-  padding: 0 16px;
-  flex-direction: column;
+  position: fixed;
+  height: 100%;
+  width: 100%;
 `;
 
-const App: React.SFC<{}> = () => {
+const ContentContainer = withTheme()(styled.div`
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: ${props => props.theme.palette.background.default};
+`);
+
+const Main = withTheme()(styled.main`
+  flex-grow: 1;
+  width: 100%;
+  padding: ${props => props.theme.spacing.unit * 3}px;
+`);
+
+/**
+ * Takes care of the title, description and fonts of all the pages.
+ */
+const Head: React.FC = () => {
   return (
-    <AppWrapper>
-      <Helmet
-        titleTemplate="%s - React.js Boilerplate"
-        defaultTitle="React.js Boilerplate"
-      >
-        <meta name="description" content="A React.js Boilerplate application" />
-      </Helmet>
-      <Header />
-      <Switch>
-        <Route exact path="/" component={HomePage} />
-        <Route path="/features" component={FeaturePage} />
-        <Route path="" component={NotFoundPage} />
-      </Switch>
-      <Footer />
-      <GlobalStyle />
-    </AppWrapper>
+    // %s is replaced by the title of the current page
+    <Helmet
+      titleTemplate="%s - React Boilerplate App"
+      defaultTitle="React Boilerplate App"
+    >
+      <meta name="description" content="React boilerplate application" />
+
+      {/* Material UI standard font */}
+      <link
+        key="link1"
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Roboto:300,400,500"
+      />
+
+      {/* Material UI icons */}
+      <link
+        key="link2"
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      />
+    </Helmet>
+  );
+};
+
+const App: React.FC = () => {
+  return (
+    <MuiThemeProvider theme={theme}>
+      <CssBaseline />
+      <Head />
+      <Root>
+        <NavDrawer />
+        <ContentContainer>
+          <AppBar position="static">
+            <Toolbar>
+              <Typography variant="h6" color="inherit" noWrap>
+                <ActiveRoute render="title" />
+              </Typography>
+            </Toolbar>
+          </AppBar>
+          <Main>
+            <ActiveRoute render="content" />
+          </Main>
+        </ContentContainer>
+      </Root>
+    </MuiThemeProvider>
   );
 };
 
