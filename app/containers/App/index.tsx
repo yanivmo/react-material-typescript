@@ -8,14 +8,19 @@
 
 import * as React from 'react';
 import { Helmet } from 'react-helmet';
-import styled from 'styled-components';
 
 import AppBar from '@material-ui/core/AppBar';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 
-import { MuiThemeProvider, withTheme } from '@material-ui/core/styles';
+import {
+  MuiThemeProvider,
+  withStyles,
+  WithStyles,
+  Theme,
+  createStyles,
+} from '@material-ui/core/styles';
 
 import createTheme from 'styles/createTheme';
 import NavDrawer from 'containers/NavDrawer';
@@ -23,26 +28,30 @@ import { ActiveRoute } from 'containers/Routes';
 
 const theme = createTheme({});
 
-const Root = styled.div`
-  display: flex;
-  position: fixed;
-  height: 100%;
-  width: 100%;
-`;
-
-const ContentContainer = withTheme()(styled.div`
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  background-color: ${props => props.theme.palette.background.default};
-`);
-
-const Main = withTheme()(styled.main`
-  flex-grow: 1;
-  width: 100%;
-  padding: ${props => props.theme.spacing.unit * 3}px;
-`);
+const styles = (theme: Theme) =>
+  createStyles({
+    root: {
+      display: 'flex',
+      position: 'fixed',
+      height: '100%',
+      width: '100%',
+    },
+    contentContainer: {
+      flexGrow: 1,
+      display: 'flex',
+      flexDirection: 'column',
+      height: '100%',
+      backgroundColor: theme.palette.background.default,
+    },
+    main: {
+      flexGrow: 1,
+      width: '100%',
+      paddingTop: theme.spacing.unit * 2,
+      paddingBottom: theme.spacing.unit * 2,
+      ...theme.mixins.gutters(),
+    },
+  });
+type StylesType = WithStyles<typeof styles>;
 
 /**
  * Takes care of the title, description and fonts of all the pages.
@@ -73,14 +82,14 @@ const Head: React.FC = () => {
   );
 };
 
-const App: React.FC = () => {
+const App: React.FC<StylesType> = ({ classes }) => {
   return (
     <MuiThemeProvider theme={theme}>
       <CssBaseline />
       <Head />
-      <Root>
+      <div className={classes.root}>
         <NavDrawer />
-        <ContentContainer>
+        <div className={classes.contentContainer}>
           <AppBar position="static">
             <Toolbar>
               <Typography variant="h6" color="inherit" noWrap>
@@ -88,13 +97,13 @@ const App: React.FC = () => {
               </Typography>
             </Toolbar>
           </AppBar>
-          <Main>
+          <main className={classes.main}>
             <ActiveRoute render="content" />
-          </Main>
-        </ContentContainer>
-      </Root>
+          </main>
+        </div>
+      </div>
     </MuiThemeProvider>
   );
 };
 
-export default App;
+export default withStyles(styles)(App);
